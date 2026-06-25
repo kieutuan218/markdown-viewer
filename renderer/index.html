@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; img-src 'self' data: file:; style-src 'self' 'unsafe-inline'; script-src 'self';" />
+  <title>Markdown Viewer</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="toolbar">
+    <button id="btn-back" class="tb-btn" title="Back (Alt+Left)" disabled>&#8592;</button>
+    <button id="btn-forward" class="tb-btn" title="Forward (Alt+Right)" disabled>&#8594;</button>
+    <span class="tb-sep"></span>
+    <button id="btn-open-file" class="tb-btn" title="Open File (Ctrl+O)">📄 Open File</button>
+    <button id="btn-open-folder" class="tb-btn" title="Open Folder (Ctrl+Shift+O)">📁 Open Folder</button>
+    <span class="tb-sep"></span>
+    <button id="btn-toggle-sidebar" class="tb-btn" title="Toggle Sidebar (Ctrl+B)">☰</button>
+    <button id="btn-toggle-outline" class="tb-btn" title="Toggle Outline (Ctrl+Shift+B)">≣ Outline</button>
+    <span id="current-path" class="current-path"></span>
+    <span id="app-version" class="app-version" title="About"></span>
+  </div>
+
+  <div id="tabbar"></div>
+
+  <div id="main">
+    <aside id="sidebar">
+      <div id="sidebar-header">
+        <span id="folder-name">No folder open</span>
+        <button id="btn-refresh-tree" title="Refresh folder (F5)">↻</button>
+      </div>
+      <div id="file-tree"></div>
+    </aside>
+    <div id="sidebar-resizer"></div>
+    <div id="content-host">
+      <div id="empty-state" class="empty-state">
+        <h1>Markdown Viewer</h1>
+        <p>Open a file or folder to get started.</p>
+        <ul>
+          <li><b>Ctrl+O</b> — Open a markdown file</li>
+          <li><b>Ctrl+Shift+O</b> — Open a folder</li>
+          <li><b>Alt+&larr; / Alt+&rarr;</b> — Back / Forward (per tab)</li>
+          <li>Click a file in the sidebar to open it in a tab</li>
+          <li><b>Ctrl+Click</b> a link to open it in a new tab</li>
+          <li>Click <code>file.md#L42</code> links to jump to a line</li>
+        </ul>
+        <p class="welcome-credit">
+          <span id="welcome-version"></span> · Made by
+          <a href="https://lifecraftlab.cc/">LifeCraft Lab</a>
+        </p>
+      </div>
+    </div>
+    <div id="outline-resizer"></div>
+    <aside id="outline">
+      <div id="outline-header">Outline</div>
+      <div id="outline-list"></div>
+    </aside>
+  </div>
+
+  <div id="diagram-modal" class="hidden">
+    <div class="modal-toolbar">
+      <button id="modal-zoom-out" title="Zoom out">−</button>
+      <span class="zoom-level" id="modal-zoom-level">100%</span>
+      <button id="modal-zoom-in" title="Zoom in">+</button>
+      <button id="modal-zoom-reset" title="Fit to screen">⤢</button>
+      <span class="spacer"></span>
+      <span class="modal-hint">Scroll = zoom · Drag = pan · Esc = close</span>
+      <button id="modal-close" class="modal-close" title="Close (Esc)">✕</button>
+    </div>
+    <div class="modal-canvas" id="modal-canvas">
+      <div class="modal-stage" id="modal-stage"></div>
+    </div>
+  </div>
+
+  <script src="../node_modules/markdown-it/dist/markdown-it.min.js"></script>
+  <script src="../node_modules/mermaid/dist/mermaid.min.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>
