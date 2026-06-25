@@ -1,18 +1,68 @@
 {
   "name": "markdown-viewer",
   "version": "1.0.0",
-  "description": "Markdown viewer with file/folder open, line-anchor links, and back/next navigation",
+  "description": "Markdown viewer with file/folder open, line-anchor links, tabs, Mermaid diagrams, outline, and workspace restore",
   "main": "main.js",
-  "scripts": {
-    "start": "electron ."
-  },
-  "author": "",
+  "author": "KIEU TUAN <kieutuan218@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder",
+    "dist:win": "electron-builder --win",
+    "dist:mac": "electron-builder --mac",
+    "release": "electron-builder --publish always"
+  },
   "devDependencies": {
-    "electron": "^33.0.0"
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8"
   },
   "dependencies": {
     "markdown-it": "^14.1.0",
     "mermaid": "^11.15.0"
+  },
+  "build": {
+    "appId": "cc.lifecraftlab.markdownviewer",
+    "productName": "Markdown Viewer",
+    "directories": {
+      "output": "dist"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "kieutuan218",
+        "repo": "markdown-viewer"
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "artifactName": "MarkdownViewer-${version}-win-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "category": "public.app-category.developer-tools",
+      "artifactName": "MarkdownViewer-${version}-mac-${arch}.${ext}"
+    }
   }
 }
