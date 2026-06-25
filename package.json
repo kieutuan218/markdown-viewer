@@ -1,6 +1,6 @@
 {
   "name": "markdown-viewer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Markdown viewer with file/folder open, line-anchor links, tabs, Mermaid diagrams, outline, and workspace restore",
   "main": "main.js",
   "author": "KIEU TUAN <kieutuan218@gmail.com>",

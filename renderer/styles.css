@@ -108,6 +108,13 @@ html, body {
 }
 .tab-label { overflow: hidden; text-overflow: ellipsis; }
 .tab.preview .tab-label { font-style: italic; }
+
+/* drag & drop reordering */
+.tab.dragging { opacity: 0.45; }
+.tab.drop-before { box-shadow: inset 3px 0 0 0 var(--accent); }
+.tab.drop-after { box-shadow: inset -3px 0 0 0 var(--accent); }
+.tab.active.drop-before { box-shadow: inset 3px 0 0 0 var(--accent), inset 0 2px 0 var(--accent); }
+.tab.active.drop-after { box-shadow: inset -3px 0 0 0 var(--accent), inset 0 2px 0 var(--accent); }
 .tab-close {
   flex: 0 0 auto;
   width: 18px;
@@ -382,7 +389,7 @@ html, body {
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(0, 0, 0, 0.72);
+  background: var(--bg);
   display: flex;
   flex-direction: column;
 }

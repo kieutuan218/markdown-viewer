@@ -280,9 +280,81 @@ function renderTabBar() {
     // Double-clicking a preview tab keeps it (pins it), like VS Code.
     el.addEventListener('dblclick', () => pinTab(tab));
     el.addEventListener('mouseup', (e) => { if (e.button === 1) { e.preventDefault(); closeTab(tab.id); } });
+
+    // Drag & drop to reorder tabs.
+    el.draggable = true;
+    el.addEventListener('dragstart', (e) => {
+      dragSrcId = tab.id;
+      e.dataTransfer.effectAllowed = 'move';
+      try { e.dataTransfer.setData('text/plain', tab.id); } catch { /* ignore */ }
+      el.classList.add('dragging');
+    });
+    el.addEventListener('dragend', () => {
+      dragSrcId = null;
+      clearDropIndicators();
+      el.classList.remove('dragging');
+    });
+    el.addEventListener('dragover', (e) => {
+      if (!dragSrcId || dragSrcId === tab.id) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      const r = el.getBoundingClientRect();
+      const after = e.clientX - r.left > r.width / 2;
+      clearDropIndicators();
+      el.classList.add(after ? 'drop-after' : 'drop-before');
+    });
+    el.addEventListener('dragleave', () => el.classList.remove('drop-before', 'drop-after'));
+    el.addEventListener('drop', (e) => {
+      if (!dragSrcId || dragSrcId === tab.id) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const r = el.getBoundingClientRect();
+      const after = e.clientX - r.left > r.width / 2;
+      clearDropIndicators();
+      moveTab(dragSrcId, tab.id, after);
+    });
+
     tabbar.appendChild(el);
   }
 }
+
+let dragSrcId = null;
+
+function clearDropIndicators() {
+  tabbar.querySelectorAll('.drop-before, .drop-after').forEach((el) => {
+    el.classList.remove('drop-before', 'drop-after');
+  });
+}
+
+function moveTab(srcId, targetId, after) {
+  if (srcId === targetId) return;
+  const from = tabs.findIndex((t) => t.id === srcId);
+  if (from < 0) return;
+  const [moved] = tabs.splice(from, 1);
+  let to = tabs.findIndex((t) => t.id === targetId);
+  if (to < 0) { tabs.splice(from, 0, moved); return; }
+  if (after) to += 1;
+  tabs.splice(to, 0, moved);
+  renderTabBar();
+  saveWorkspace();
+}
+
+function moveTabToEnd(srcId) {
+  const from = tabs.findIndex((t) => t.id === srcId);
+  if (from < 0) return;
+  const [moved] = tabs.splice(from, 1);
+  tabs.push(moved);
+  renderTabBar();
+  saveWorkspace();
+}
+
+// Dropping in the empty area of the tab bar moves the tab to the end.
+tabbar.addEventListener('dragover', (e) => {
+  if (dragSrcId) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
+});
+tabbar.addEventListener('drop', (e) => {
+  if (dragSrcId && e.target === tabbar) { e.preventDefault(); moveTabToEnd(dragSrcId); }
+});
 
 // ---------------------------------------------------------------------------
 // Rendering into a tab
